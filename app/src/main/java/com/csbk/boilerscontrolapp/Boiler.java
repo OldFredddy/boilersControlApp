@@ -55,6 +55,16 @@ public class Boiler {
     String correctionTpod;
     String tPlan;
     String tAlarm;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    Integer id;
     int imageResId;
     public String getCorrectionTpod() {
         return correctionTpod;
@@ -78,6 +88,5 @@ public class Boiler {
     public void settAlarm(String tAlarm) {
         this.tAlarm = "Ср. точка аварии: " + tAlarm + "°C";
     }
-
 
 }

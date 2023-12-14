@@ -1,24 +1,44 @@
 package com.csbk.boilerscontrolapp;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.Settings;
 import androidx.core.app.NotificationCompat;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class MainForegroundService extends Service {
     private Handler handler = new Handler();
-    private HashMap<Boiler, Boolean> previousStates = new HashMap<>();
+    Map<Integer, Boolean> previousStates = new HashMap<>();
     private List<Boiler> boilers = new ArrayList<>();
     private NotificationCompat.Builder builder;
     private static final int NOTIFICATION_ID = 1;
     private static final String CHANNEL_ID = "channel_01";
+    public String[] boilerNames = {
+            "Склады Мищенко",                   //0   кот№1 Склады Мищенко
+            "Выставка Ендальцева",              //1   кот№2 Ендальцев
+            "ЧукотОптТорг",                     //2   кот№3 ЧукотОптТорг
+            "ЧСБК база",                        //3   кот№4 "ЧСБК Новая"
+            "Офис СВТ",                         //4   кот№5 офис "СВТ"
+            "Общежитие на Южной",               //5   кот№6 общежитие на Южной
+            "Офис ЧСБК",                        //6   кот№7 офис ЧСБК
+            "Рынок",                            //7   кот№8 "Рынок"
+            "Макатровых",                       //8   кот№9 Макатровых
+            "ДС «Сказка»",                      //9   кот№10  "Д/С Сказка"
+            "Полярный",                         //10  кот№11 Полярный
+            "Департамент",                      //11  кот№12 Департамент
+            "Квартиры в офисе",                 //12  кот№13 квартиры в офисе
+            "ТО Шишкина"                        //13  кот№14 ТО Шишкина
+    };
 
     @Override
     public void onCreate() {
@@ -28,39 +48,50 @@ public class MainForegroundService extends Service {
         handler.post(updateTask); // Запуск задачи обновления данных
     }
     private void createNotificationChannel() {
-    //   CharSequence name = getString(R.string.channel_name); // Название канала, видимое пользователю
-    //   String description = getString(R.string.channel_description); // Описание канала
-    //   int importance = NotificationManager.IMPORTANCE_HIGH; // Важность канала
-    //   NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-    //   channel.setDescription(description);
-    //   NotificationManager notificationManager = (NotificationManager) Objects.requireNonNull(getActivity()).getSystemService(Context.NOTIFICATION_SERVICE);
-    //   notificationManager.createNotificationChannel(channel);
+        CharSequence name = getString(R.string.channel_name); // Название канала, видимое пользователю
+        String description = getString(R.string.channel_description); // Описание канала
+        int importance = NotificationManager.IMPORTANCE_HIGH; // Важность канала
+
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+        channel.setDescription(description);
+
+        // Включение вибрации
+        channel.enableVibration(true);
+        channel.setVibrationPattern(new long[] { 2000,2000,2000,2000,2000,2000,2000,2000 });
+
+        // Установка звука уведомления
+        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        channel.setSound(soundUri, Notification.AUDIO_ATTRIBUTES_DEFAULT);
+
+        // Регистрация канала в системе
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.createNotificationChannel(channel);
     }
     private Notification getMyActivityNotification(){
-        // Создайте и настройте уведомление
         String emojiStr="";
         for (int i = 0; i < boilers.size(); i++) {
             emojiStr +=(boilers.get(i).isOk() ? "\uD83D\uDFE2" : "\uD83D\uDD34");
         }
         builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon)
-                .setContentTitle("Статус котельных")
-                .setContentText(emojiStr)
+                .setContentTitle("Сервис уведомлений по котельным")
+                .setContentText("\uD83D\uDFE2 Сервис в работе \uD83D\uDFE2")
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         return builder.build();
     }
-    private void sendAlertNotification(Boiler boiler) {
-      //  NotificationCompat.Builder alertBuilder = new NotificationCompat.Builder(getActivity(), CHANNEL_ID)
-      //          .setSmallIcon(R.drawable.notification_icon)
-      //          .setContentTitle("Проблема с котельной")
-      //          .setContentText("Проблема в котельной: ") // TODO имя!
-      //          .setPriority(NotificationCompat.PRIORITY_HIGH)
-      //          .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 }) // Паттерн вибрации
-      //          .setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
-//
-      // NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-      // notificationManager.notify(NOTIFICATION_ID, alertBuilder.build()); // Используйте уникальный ID для каждой котельной
+    private void sendAlertNotification(int numBoiler) {
+          NotificationCompat.Builder alertBuilder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                  .setSmallIcon(R.drawable.notification_icon)
+                //  .setLargeIcon(R.drawable.boiler_icon_1) //TODO Посмотри
+                  .setContentTitle("Котельные")
+                  .setContentText("Проблема в котельной №"+numBoiler +" "+boilerNames[numBoiler] ) // TODO имя!
+                  .setPriority(NotificationCompat.PRIORITY_MAX)
+                  .setVibrate(new long[] {2000,2000,2000,2000,2000,2000,2000,2000}) // Паттерн вибрации
+                  .setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+
+          NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+          notificationManager.notify(numBoiler, alertBuilder.build()); // Используйте уникальный ID для каждой котельной
     }
     private Runnable updateTask = new Runnable() {
         @Override
@@ -85,21 +116,22 @@ public class MainForegroundService extends Service {
                 boilers.clear();
                 boilers.addAll(result);
                 String statusNotificationStr = "";
-                for (Boiler boiler : boilers) {
+                for (int i = 0; i < boilers.size(); i++) {
+                    Boiler boiler = boilers.get(i);
                     boolean currentState = boiler.isOk();
-                    Boolean previousState = previousStates.get(boiler);
+                    Integer boilerId = boiler.getId(); // Предполагаем, что есть метод getId()
+                    Boolean previousState = previousStates.get(boilerId);
                     if (previousState == null || previousState != currentState) {
-                        previousStates.put(boiler, currentState);
+                        previousStates.put(boilerId, currentState);
                         if (!currentState) {
-                            sendAlertNotification(boiler); // Отправка специального уведомления
+                            sendAlertNotification(i);
                         }
                     }
-                    statusNotificationStr += (currentState ? "\uD83D\uDFE2 " : "\uD83D\uDD34 ");
                 }
-                builder.setContentText(statusNotificationStr);
-             //   NotificationManager notificationManager = (NotificationManager) Objects.requireNonNull(getActivity()).getSystemService(Context.NOTIFICATION_SERVICE);
+             //   builder.setContentText(statusNotificationStr);
+             //   NotificationManager notificationManager = (NotificationManager) Objects.requireNonNull(getApplicationContext()).getSystemService(Context.NOTIFICATION_SERVICE);
              //   notificationManager.notify(NOTIFICATION_ID, builder.build());
-                updateStatusViews();
+              //  updateStatusViews();
             } else {
                 for (int i = 0; i < 13; i++) {
                     boilers.get(i).setOk(false);

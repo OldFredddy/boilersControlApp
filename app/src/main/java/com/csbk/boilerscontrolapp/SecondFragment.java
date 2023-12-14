@@ -1,6 +1,7 @@
 package com.csbk.boilerscontrolapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.*;
 import android.view.Gravity;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,8 +41,8 @@ public class SecondFragment extends Fragment {
             "ДС «Сказка»",                        //9   кот№10  "Д/С Сказка"
             "Полярный",                         //10  кот№11 Полярный
             "Департамент",                      //11  кот№12 Департамент
-            "Квартиры в офисе",               //12  кот№13 квартиры в офисе
-            "ТО Шишкина"                             //13  кот№14 ТО Шишкина
+            "Квартиры в офисе",                 //12  кот№13 квартиры в офисе
+            "ТО Шишкина"                        //13  кот№14 ТО Шишкина
     };
     LinearLayout statusContainer;
     LinearLayout emojiContainer;
@@ -55,7 +57,7 @@ public class SecondFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         boilersList.setLayoutManager(layoutManager);
         boilersList.setHasFixedSize(true);
-        boilersAdapter = new BoilersAdapter(14);
+        boilersAdapter = new BoilersAdapter(STD_NUMBER_OF_BOILERS);
         boilers = createTestListOfBoilers();
         updateTask.run();
         boilersAdapter.setBoilersList(boilers);
@@ -68,10 +70,13 @@ public class SecondFragment extends Fragment {
     int NOTIFICATION_ID = 1;
     private static final String CHANNEL_ID = "status_id";
     private HashMap<Boiler, Boolean> previousStates = new HashMap<>();
+    int[] clickCount = {0};
+    int totalClicksRequired = 5;
+    boolean isActive=true;
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        emojiContainer = view.findViewById(R.id.emoji_container); // Получаем emojiContainer
+        emojiContainer = view.findViewById(R.id.emoji_container);
         emojiTextViews.clear();
         statusContainer = view.findViewById(R.id.status_container);
         String startStatusNotification = "";
@@ -80,7 +85,7 @@ public class SecondFragment extends Fragment {
             statusView.setPadding(4, 0, 4, 0);
             statusView.setText(boilers.get(i).isOk() ? "\uD83D\uDFE2" : "\uD83D\uDD34");
             statusView.setTextSize(16);
-            emojiContainer.addView(statusView); // Добавляем во внутренний контейнер
+            emojiContainer.addView(statusView);
             emojiTextViews.add(statusView);
             startStatusNotification += (boilers.get(i).isOk() ? "\uD83D\uDFE2 " : "\uD83D\uDD34 ");
         }
@@ -94,7 +99,33 @@ public class SecondFragment extends Fragment {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         graphTextView.setLayoutParams(params);
         statusContainer.addView(graphTextView);
+        statusContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Увеличение счетчика при каждом нажатии
+                clickCount[0]++;
 
+                // Проверка, сколько нажатий осталось
+                int clicksLeft = totalClicksRequired - clickCount[0];
+
+                if(clicksLeft > 0) {
+                    Toast.makeText(v.getContext(), "Осталось нажатий: " + clicksLeft, Toast.LENGTH_SHORT).show();
+                } else {
+                    if (isActive){
+                        Intent serviceIntent = new Intent(getActivity(), MainForegroundService.class);
+                        getActivity().stopService(serviceIntent);
+                        isActive=false;
+                    } else {
+                        Intent serviceIntent = new Intent(getActivity(), MainForegroundService.class);
+                        getActivity().startService(serviceIntent);
+                    }
+
+
+                    // Сброс счетчика
+                    clickCount[0] = 0;
+                }
+            }
+        });
     }
 
     @Override
@@ -166,9 +197,13 @@ public class SecondFragment extends Fragment {
             TextView statusView = emojiTextViews.get(i);
             statusView.setText(boilers.get(i).isOk() ? "\uD83D\uDFE2" : "\uD83D\uDD34");
         }
+        if(boilers.get(1).gettUlicaWithoutCelcii()!=null) {
+            double tStreet = Float.parseFloat(boilers.get(1).gettUlicaWithoutCelcii());
+            int tPlanGraph = (int) Math.round(tStreet * tStreet * 0.00886 - 0.803 * tStreet + 54);
 
-        double tStreet = Float.parseFloat(boilers.get(1).gettUlicaWithoutCelcii());
-        int tPlanGraph = (int) Math.round(tStreet*tStreet*0.00886 - 0.803*tStreet + 54);
         graphTextView.setText("По графику: " + tPlanGraph + " °C");
+        } else {
+            graphTextView.setText("По графику: *** °C");
+        }
     }
 }

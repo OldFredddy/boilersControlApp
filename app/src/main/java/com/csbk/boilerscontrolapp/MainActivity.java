@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         Intent serviceIntent = new Intent(this, MainForegroundService.class);
-        //startService(serviceIntent);
-
+        startService(serviceIntent);
+        //stopService(serviceIntent);
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

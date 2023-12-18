@@ -3,6 +3,7 @@ package com.csbk.boilerscontrolapp;
 import android.animation.*;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -177,6 +178,13 @@ public class BoilersAdapter extends  RecyclerView.Adapter<BoilersAdapter.Boilers
             tv_boilerTplan.setText(tPlan);
             tv_boilerTalarm.setText(tAlarm);
             tv_boilerLabel.setText(boilerLabel);
+            float newSize = 11; // example size in sp
+            tv_boilerTpod.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
+            tv_boilerPpod.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
+            tv_boilerTulica.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
+            tv_boilerTplan.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
+            tv_boilerTalarm.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
+            tv_boilerLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
             Glide.with(iv_boilerIcon.getContext())
                     .load(imageResId)
                     .apply(new RequestOptions()

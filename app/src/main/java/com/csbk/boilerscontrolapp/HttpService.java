@@ -68,6 +68,6 @@ public class HttpService {
         if (!isFetchSuccessful){
             return  null;
         }
-        return  null; //TODO проверить - заходит ли сюда
+        return  null;
     }
 }

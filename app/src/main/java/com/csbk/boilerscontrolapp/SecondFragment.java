@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.*;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,18 +74,20 @@ public class SecondFragment extends Fragment {
     int[] clickCount = {0};
     int totalClicksRequired = 5;
     boolean isActive=true;
+    private Toast currentToast;
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         emojiContainer = view.findViewById(R.id.emoji_container);
         emojiTextViews.clear();
+
         statusContainer = view.findViewById(R.id.status_container);
         String startStatusNotification = "";
         for (int i = 0; i < boilers.size(); i++) {
             TextView statusView = new TextView(getContext());
             statusView.setPadding(4, 0, 4, 0);
             statusView.setText(boilers.get(i).isOk() ? "\uD83D\uDFE2" : "\uD83D\uDD34");
-            statusView.setTextSize(16);
+            statusView.setTextSize(12);
             emojiContainer.addView(statusView);
             emojiTextViews.add(statusView);
             startStatusNotification += (boilers.get(i).isOk() ? "\uD83D\uDFE2 " : "\uD83D\uDD34 ");
@@ -102,14 +105,14 @@ public class SecondFragment extends Fragment {
         statusContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Увеличение счетчика при каждом нажатии
+                if (currentToast != null) {
+                    currentToast.cancel();
+                }
                 clickCount[0]++;
-
-                // Проверка, сколько нажатий осталось
                 int clicksLeft = totalClicksRequired - clickCount[0];
-
                 if(clicksLeft > 0) {
-                    Toast.makeText(v.getContext(), "Осталось нажатий: " + clicksLeft, Toast.LENGTH_SHORT).show();
+                    currentToast = Toast.makeText(v.getContext(), "Осталось нажатий: " + clicksLeft, Toast.LENGTH_SHORT);
+                    currentToast.show();
                 } else {
                     if (isActive){
                         Intent serviceIntent = new Intent(getActivity(), MainForegroundService.class);
@@ -119,9 +122,6 @@ public class SecondFragment extends Fragment {
                         Intent serviceIntent = new Intent(getActivity(), MainForegroundService.class);
                         getActivity().startService(serviceIntent);
                     }
-
-
-                    // Сброс счетчика
                     clickCount[0] = 0;
                 }
             }
@@ -202,6 +202,8 @@ public class SecondFragment extends Fragment {
             int tPlanGraph = (int) Math.round(tStreet * tStreet * 0.00886 - 0.803 * tStreet + 54);
 
         graphTextView.setText("По графику: " + tPlanGraph + " °C");
+            float newSize = 11; // example size in sp
+            graphTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
         } else {
             graphTextView.setText("По графику: *** °C");
         }

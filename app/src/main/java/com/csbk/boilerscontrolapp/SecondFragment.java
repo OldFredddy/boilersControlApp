@@ -86,11 +86,16 @@ public class SecondFragment extends Fragment {
         for (int i = 0; i < boilers.size(); i++) {
             TextView statusView = new TextView(getContext());
             statusView.setPadding(4, 0, 4, 0);
-            statusView.setText(boilers.get(i).isOk() ? "\uD83D\uDFE2" : "\uD83D\uDD34");
+            int status = boilers.get(i).isOk();
+            statusView.setText(status == 0 ? "\uD83D\uDFE1" : // Желтый
+                    (status == 1 ? "\uD83D\uDFE2" : // Зеленый
+                            "\uD83D\uDD34")); // Красный
             statusView.setTextSize(12);
             emojiContainer.addView(statusView);
             emojiTextViews.add(statusView);
-            startStatusNotification += (boilers.get(i).isOk() ? "\uD83D\uDFE2 " : "\uD83D\uDD34 ");
+            startStatusNotification += status == 0 ? "\uD83D\uDFE1 " : // Желтый
+                    (status == 1 ? "\uD83D\uDFE2 " : // Зеленый
+                            "\uD83D\uDD34 ");   // Красный
         }
         graphTextView = new TextView(getContext());
         graphTextView.setTextSize(12);
@@ -143,7 +148,7 @@ public class SecondFragment extends Fragment {
                 boiler.settPod("***");
                 boiler.setpPod("***");
                 boiler.settUlica(String.valueOf(i-5));
-                boiler.setOk(true);
+                boiler.setOk(1); //0-waiting 1 - good 2 - error
                 boiler.settPlan("***");
                 boiler.settAlarm("Нет связи!");
                 int imageResId = context.getResources().getIdentifier("boiler_icon_" + (i + 1), "drawable", context.getPackageName());
@@ -165,7 +170,7 @@ public class SecondFragment extends Fragment {
     };
 
     private void fetchDataAndUpdateUI() {
-        new GetDataTask().execute("http://85.175.232.186:4567/params");
+        new GetDataTask().execute("http://"+HttpService.IP+":"+HttpService.PORT+"/getparams");
     }
 
     private class GetDataTask extends AsyncTask<String, Void, List<Boiler>> {
@@ -195,10 +200,14 @@ public class SecondFragment extends Fragment {
     private void updateStatusViews() {
         for (int i = 0; i < boilers.size(); i++) {
             TextView statusView = emojiTextViews.get(i);
-            statusView.setText(boilers.get(i).isOk() ? "\uD83D\uDFE2" : "\uD83D\uDD34");
+            int status = boilers.get(i).isOk();
+            statusView.setText(status == 0 ? "\uD83D\uDFE1" : // Желтый
+                    (status == 1 ? "\uD83D\uDFE2" : // Зеленый
+                            "\uD83D\uDD34"));  // Красный
+
         }
-        if(boilers.get(1).gettUlicaWithoutCelcii()!=null) {
-            double tStreet = Float.parseFloat(boilers.get(1).gettUlicaWithoutCelcii());
+        if(boilers.get(1).gettUlica()!=null) {
+            double tStreet = Float.parseFloat(boilers.get(1).gettUlica());
             int tPlanGraph = (int) Math.round(tStreet * tStreet * 0.00886 - 0.803 * tStreet + 54);
 
         graphTextView.setText("По графику: " + tPlanGraph + " °C");

@@ -65,9 +65,9 @@ public class BoilersAdapter extends  RecyclerView.Adapter<BoilersAdapter.Boilers
     @Override
     public void onBindViewHolder(@NonNull @NotNull BoilersViewHolder holder, int position) {
         Boiler currentBoiler = boilersList.get(position);
-        holder.bind(currentBoiler.tPod, currentBoiler.pPod, currentBoiler.tUlica, currentBoiler.gettPlan(), currentBoiler.gettAlarm(), boilerNames[position],currentBoiler.imageResId);
+        holder.bind(currentBoiler.gettPod(), currentBoiler.getpPod(), currentBoiler.gettUlica(), currentBoiler.gettPlan(), currentBoiler.gettAlarm(), boilerNames[position],currentBoiler.getImageResId());
 
-        if (!currentBoiler.isOk() && position != NO_POSITION) {
+        if( (currentBoiler.isOk()==2) && (position != NO_POSITION)) {
             holder.startAnimation();
         } else {
             holder.stopAnimation();
@@ -172,13 +172,17 @@ public class BoilersAdapter extends  RecyclerView.Adapter<BoilersAdapter.Boilers
             }
         }
         void bind(String tPod, String pPod, String tUlica, String tPlan, String tAlarm,String boilerLabel, int imageResId){
-            tv_boilerTpod.setText(tPod);
-            tv_boilerPpod.setText(pPod);
-            tv_boilerTulica.setText(tUlica);
-            tv_boilerTplan.setText(tPlan);
-            tv_boilerTalarm.setText(tAlarm);
+            tv_boilerTpod.setText(tPod+" °C");
+            tv_boilerPpod.setText(pPod+" МПа");
+            tv_boilerTulica.setText(tUlica+" °C");
+            tv_boilerTplan.setText("Контроллер: "+tPlan+" °C");
+            if (!tAlarm.equals("Нет связи!")){
+            double tAlarmDouble = Double.parseDouble(tAlarm); // Преобразование строки в число
+            tAlarmDouble = Math.round(tAlarmDouble * 10.0) / 10.0; // Округление до одного десятичного знака
+            tAlarm = String.format("%.1f", tAlarmDouble);} // Преобразование числа обратно в строку с одним десятичным знаком
+            tv_boilerTalarm.setText("Ср. т. аварии:" + tAlarm + "°C");
             tv_boilerLabel.setText(boilerLabel);
-            float newSize = 11; // example size in sp
+            float newSize = 11; 
             tv_boilerTpod.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
             tv_boilerPpod.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
             tv_boilerTulica.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);

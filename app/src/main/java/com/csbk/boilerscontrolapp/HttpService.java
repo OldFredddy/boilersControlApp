@@ -13,7 +13,8 @@ public class HttpService {
     private static final OkHttpClient client = new OkHttpClient();
     static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final Gson gson = new Gson();
-    private static final String IP = "85.175.232.186";//85.175.232.186
+    public static final String IP = "95.142.45.133";//85.175.232.186
+    public static final String PORT = "23873";//4567
 
     public static void sendTplan(int[] correctTplan) {
        HttpBackgroundService.sendTplan(correctTplan);
@@ -26,7 +27,7 @@ public class HttpService {
     public static void sendResetAvary() {
         int resetValue = -1;
         String json = gson.toJson(resetValue);
-        sendPostRequest("http://"+IP+":4567/avaryreset", json);
+        sendPostRequest("http://"+IP+":"+PORT+"/avaryreset", json);
     }
 
     private static void sendPostRequest(String url, String json) {

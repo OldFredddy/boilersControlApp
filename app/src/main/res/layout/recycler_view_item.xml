@@ -12,147 +12,150 @@
             android:layout_gravity="center"
             android:padding="0dp"
             android:textColor="@color/telegramDarkText"/>
+    
     <LinearLayout
             android:orientation="horizontal"
             android:padding="0dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-    <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/iv_boilerIcon"
-            android:paddingTop="2dp"
-            android:layout_gravity="center"/>
-
-    <LinearLayout
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="5dp"
-            android:orientation="vertical"
-            android:id="@+id/boilerLayout">
-
-        <TextView
-                android:id="@+id/tv_boilerTpod"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/telegramDarkText"/>
-
-        <TextView
-                android:id="@+id/tv_boilerPpod"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/telegramDarkText"/>
-
-        <TextView
-                android:id="@+id/tv_boilerTulica"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/telegramDarkText"/>
-    </LinearLayout>
-    
-    <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="5dp"
-            android:orientation="horizontal">
+            >
         
-        <!-- LinearLayout для кнопок минус -->
+        <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/iv_boilerIcon"
+                android:paddingTop="2dp"
+                android:layout_gravity="center"/>
+        
         <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="5dp"
                 android:orientation="vertical"
-                android:padding="5dp">
+                android:id="@+id/boilerLayout">
             
-            <Button
-                    android:id="@+id/btn_minus_tplan"
-                    android:layout_width="25dp"
-                    android:layout_height="30dp"
-                    android:text="-"
-                    android:textSize="12sp"
-                    android:autoText="false"
-                    android:paddingLeft="0dp"
-                    android:paddingTop="0dp"
-                    android:paddingRight="0dp"
-                    android:paddingBottom="0dp"/>
+            <TextView
+                    android:id="@+id/tv_boilerTpod"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/telegramDarkText"/>
             
-            <Button
-                    android:id="@+id/btn_minus_talarm"
-                    android:layout_width="25dp"
-                    android:layout_height="30dp"
-                    android:text="-"
-                    android:textSize="12sp"
-                    android:autoText="false"
-                    android:paddingLeft="0dp"
-                    android:paddingTop="0dp"
-                    android:paddingRight="0dp"
-                    android:paddingBottom="0dp"/>
+            <TextView
+                    android:id="@+id/tv_boilerPpod"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/telegramDarkText"/>
+            
+            <TextView
+                    android:id="@+id/tv_boilerTulica"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/telegramDarkText"/>
         </LinearLayout>
         
-        <!-- Левый LinearLayout для TextView -->
-        <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:padding="10dp">
-        
-        <TextView
-                android:id="@+id/tv_boilerTplan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-        android:textColor="@color/telegramDarkText"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"/>
-        
-        <Space
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-        
-        <TextView
-                android:id="@+id/tv_boilerTalarm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-        android:textColor="@color/telegramDarkText"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"/>
-    </LinearLayout>
-        
-        <!-- Правый LinearLayout для кнопок плюс -->
         <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="5dp">
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:orientation="horizontal">
             
-            <Button
-                    android:id="@+id/btn_plus_tplan"
-                    android:layout_width="25dp"
-                    android:layout_height="30dp"
-                    android:text="+"
-                    android:textSize="12sp"
-                    android:autoText="false"
-                    android:paddingLeft="0dp"
-                    android:paddingTop="0dp"
-                    android:paddingRight="0dp"
-                    android:paddingBottom="0dp"/>
+            <!-- LinearLayout для кнопок минус -->
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+                
+                <Button
+                        android:id="@+id/btn_minus_tplan"
+                        android:layout_width="25dp"
+                        android:layout_height="30dp"
+                        android:text="-"
+                        android:textSize="12sp"
+                        android:autoText="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"/>
+                
+                <Button
+                        android:id="@+id/btn_minus_talarm"
+                        android:layout_width="25dp"
+                        android:layout_height="30dp"
+                        android:text="-"
+                        android:textSize="12sp"
+                        android:autoText="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"/>
+            </LinearLayout>
             
-            <Button
-                    android:id="@+id/btn_plus_talarm"
-                    android:layout_width="25dp"
-                    android:layout_height="30dp"
-                    android:text="+"
-                    android:textSize="12sp"
-                    android:autoText="false"
-                    android:paddingLeft="0dp"
-                    android:paddingTop="0dp"
-                    android:paddingRight="0dp"
-                    android:paddingBottom="0dp"/>
+            <!-- Левый LinearLayout для TextView -->
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+                
+                <TextView
+                        android:id="@+id/tv_boilerTplan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:textColor="@color/telegramDarkText"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"/>
+                
+                <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+                
+                <TextView
+                        android:id="@+id/tv_boilerTalarm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:textColor="@color/telegramDarkText"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"/>
+            </LinearLayout>
+            
+            <!-- Правый LinearLayout для кнопок плюс -->
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+                
+                <Button
+                        android:id="@+id/btn_plus_tplan"
+                        android:layout_width="25dp"
+                        android:layout_height="30dp"
+                        android:text="+"
+                        android:textSize="12sp"
+                        android:autoText="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"/>
+                
+                <Button
+                        android:id="@+id/btn_plus_talarm"
+                        android:layout_width="25dp"
+                        android:layout_height="30dp"
+                        android:text="+"
+                        android:textSize="12sp"
+                        android:autoText="false"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="0dp"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
 </LinearLayout>

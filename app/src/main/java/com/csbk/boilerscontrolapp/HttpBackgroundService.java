@@ -9,7 +9,8 @@ import java.io.IOException;
 
 
 public class HttpBackgroundService {
-    public static final String IP = "85.175.232.186";//85.175.232.186
+    public static final String IP = HttpService.IP;//85.175.232.186
+    public static final String PORT = HttpService.PORT;//85.175.232.186
 
     private static class SendPostRequestTask extends AsyncTask<String, Void, String> {
         private static final OkHttpClient client = new OkHttpClient();
@@ -49,18 +50,36 @@ public class HttpBackgroundService {
     }
 
     public static void sendTplan(int[] correctTplan) {
-        String json = SendPostRequestTask.gson.toJson(correctTplan);
-        new SendPostRequestTask().execute("http://"+IP+":4567/correcttplan", json);
+        String[] correctTplanS ={"0","0","0","0","0","0","0","0","0","0","0","0","0","0"};
+        for (int i = 0; i < correctTplan.length; i++) {
+            if(correctTplan[i]==3){
+                correctTplanS[i]="3";
+            }
+            if(correctTplan[i]==-3){
+                correctTplanS[i]="-3";
+            }
+        }
+        String json = SendPostRequestTask.gson.toJson(correctTplanS);
+        new SendPostRequestTask().execute("http://"+IP+":"+PORT+"/settemperaturecorrections", json);
     }
 
     public static void sendTAlarm(int[] correctTAlarm) {
-        String json = SendPostRequestTask.gson.toJson(correctTAlarm);
-        new SendPostRequestTask().execute("http://"+IP+":4567/correcttalarm", json);
+        String[] correctTalarmS ={"0","0","0","0","0","0","0","0","0","0","0","0","0","0"};
+        for (int i = 0; i < correctTAlarm.length; i++) {
+            if(correctTAlarm[i]==3){
+               correctTalarmS[i]="3";
+            }
+            if(correctTAlarm[i]==-3){
+                correctTalarmS[i]="-3";
+            }
+        }
+        String json = SendPostRequestTask.gson.toJson(correctTalarmS);
+        new SendPostRequestTask().execute("http://"+IP+":"+PORT+"/setAlarmCorrections", json);
     }
 
     public static void sendResetAvary() {
         int resetValue = -1;
         String json = SendPostRequestTask.gson.toJson(resetValue);
-        new SendPostRequestTask().execute("http://"+IP+":4567/avaryreset", json);
+        new SendPostRequestTask().execute("http://"+IP+":"+PORT+"/avaryreset", json);
     }
 }

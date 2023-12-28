@@ -70,7 +70,14 @@ public class MainForegroundService extends Service {
     private Notification getMyActivityNotification(){
         String emojiStr="";
         for (int i = 0; i < boilers.size(); i++) {
-            emojiStr +=(boilers.get(i).isOk() ? "\uD83D\uDFE2" : "\uD83D\uDD34");
+            int status = boilers.get(i).isOk();
+            if (status == 0) {
+                emojiStr += "\uD83D\uDFE1"; // Желтый
+            } else if (status == 1) {
+                emojiStr += "\uD83D\uDFE2"; // Зеленый
+            } else if (status == 2) {
+                emojiStr += "\uD83D\uDD34"; // Красный
+            }
         }
         builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon)
@@ -85,7 +92,7 @@ public class MainForegroundService extends Service {
                   .setSmallIcon(R.drawable.notification_icon)
                 //  .setLargeIcon(R.drawable.boiler_icon_1) //TODO Посмотри
                   .setContentTitle("Котельные")
-                  .setContentText("Проблема в котельной №"+numBoiler +" "+boilerNames[numBoiler] ) // TODO имя!
+                  .setContentText("Проблема в котельной №"+(numBoiler+1) +" "+boilerNames[numBoiler] ) // TODO имя!
                   .setPriority(NotificationCompat.PRIORITY_MAX)
                   .setVibrate(new long[] {2000,2000,2000,2000,2000,2000,2000,2000}) // Паттерн вибрации
                   .setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
@@ -102,7 +109,7 @@ public class MainForegroundService extends Service {
     };
 
     private void fetchDataAndUpdateUI() {
-        new GetDataTask().execute("http://85.175.232.186:4567/params");
+        new GetDataTask().execute("http://"+HttpService.IP+":"+HttpService.PORT+"/getparams");
     }
 
     private class GetDataTask extends AsyncTask<String, Void, List<Boiler>> {
@@ -118,8 +125,8 @@ public class MainForegroundService extends Service {
                 String statusNotificationStr = "";
                 for (int i = 0; i < boilers.size(); i++) {
                     Boiler boiler = boilers.get(i);
-                    boolean currentState = boiler.isOk();
-                    Integer boilerId = boiler.getId(); // Предполагаем, что есть метод getId()
+                    boolean currentState = boiler.isOk() > 1;
+                    Integer boilerId = boiler.getId();
                     Boolean previousState = previousStates.get(boilerId);
                     if (previousState == null || previousState != currentState) {
                         previousStates.put(boilerId, currentState);
@@ -133,8 +140,8 @@ public class MainForegroundService extends Service {
              //   notificationManager.notify(NOTIFICATION_ID, builder.build());
               //  updateStatusViews();
             } else {
-                for (int i = 0; i < 13; i++) {
-                    boilers.get(i).setOk(false);
+                for (int i = 0; i < boilers.size(); i++) {
+                    boilers.get(i).setOk(1);
                 }
             }
 
@@ -143,7 +150,14 @@ public class MainForegroundService extends Service {
     private void updateStatusViews() {
         String emojiStr="";
         for (int i = 0; i < boilers.size(); i++) {
-            emojiStr +=(boilers.get(i).isOk() ? "\uD83D\uDFE2" : "\uD83D\uDD34");
+            int status = boilers.get(i).isOk();
+            if (status == 0) {
+                emojiStr += "\uD83D\uDFE1"; // Желтый
+            } else if (status == 1) {
+                emojiStr += "\uD83D\uDFE2"; // Зеленый
+            } else if (status == 2) {
+                emojiStr += "\uD83D\uDD34"; // Красный
+            }
         }
         builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon)

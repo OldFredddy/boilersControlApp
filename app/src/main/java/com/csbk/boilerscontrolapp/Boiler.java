@@ -15,6 +15,15 @@ public class Boiler {
     private String pPodHighFixed;
     private String tPodFixed;
     private Integer id;
+    private long version;
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
     public int isOk() {
         return isOk;
     } //0-waiting 1 - good 2 - error

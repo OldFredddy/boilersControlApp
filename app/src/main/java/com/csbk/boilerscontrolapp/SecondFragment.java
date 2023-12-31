@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.*;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -58,7 +59,7 @@ public class SecondFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         boilersList.setLayoutManager(layoutManager);
         boilersList.setHasFixedSize(true);
-        boilersAdapter = new BoilersAdapter(STD_NUMBER_OF_BOILERS);
+        boilersAdapter = new BoilersAdapter(this.getContext(),STD_NUMBER_OF_BOILERS);
         boilers = createTestListOfBoilers();
         updateTask.run();
         boilersAdapter.setBoilersList(boilers);
@@ -211,7 +212,12 @@ public class SecondFragment extends Fragment {
             int tPlanGraph = (int) Math.round(tStreet * tStreet * 0.00886 - 0.803 * tStreet + 54);
 
         graphTextView.setText("По графику: " + tPlanGraph + " °C");
-            float newSize = 11; // example size in sp
+            DisplayMetrics metrics = getContext().getResources().getDisplayMetrics();
+            float baseSize = 11;
+            float baseDpi = (2400f / metrics.xdpi + 1080f / metrics.ydpi) / 2;
+            float currentDpi = (metrics.widthPixels / metrics.xdpi + metrics.heightPixels / metrics.ydpi) / 2;
+            float scaleFactor = currentDpi / baseDpi;
+            float newSize = baseSize * scaleFactor;
             graphTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
         } else {
             graphTextView.setText("По графику: *** °C");

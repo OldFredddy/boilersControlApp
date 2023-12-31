@@ -3,6 +3,7 @@ package com.csbk.boilerscontrolapp;
 import android.animation.*;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,13 +27,15 @@ public class BoilersAdapter extends  RecyclerView.Adapter<BoilersAdapter.Boilers
     private static int viewHolderCount;
     private int boilersItems;
     private List<Boiler> boilersList = new ArrayList<>();
-    public BoilersAdapter(int boilersOfItems){
+    private Context context;
+    public BoilersAdapter(Context context,int boilersOfItems){
         boilersItems=boilersOfItems;
         viewHolderCount = 0;
+        this.context=context;
     }
     public void setBoilersList(List<Boiler> boilersList) {
         this.boilersList = boilersList;
-        notifyDataSetChanged(); // Уведомить адаптер о том, что данные изменились
+        notifyDataSetChanged();
     }
     @NonNull
     @NotNull
@@ -65,7 +68,8 @@ public class BoilersAdapter extends  RecyclerView.Adapter<BoilersAdapter.Boilers
     @Override
     public void onBindViewHolder(@NonNull @NotNull BoilersViewHolder holder, int position) {
         Boiler currentBoiler = boilersList.get(position);
-        holder.bind(currentBoiler.gettPod(), currentBoiler.getpPod(), currentBoiler.gettUlica(), currentBoiler.gettPlan(), currentBoiler.gettAlarm(), boilerNames[position],currentBoiler.getImageResId());
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        holder.bind(metrics,currentBoiler.gettPod(), currentBoiler.getpPod(), currentBoiler.gettUlica(), currentBoiler.gettPlan(), currentBoiler.gettAlarm(), boilerNames[position],currentBoiler.getImageResId());
 
         if( (currentBoiler.isOk()==2) && (position != NO_POSITION)) {
             holder.startAnimation();
@@ -171,24 +175,35 @@ public class BoilersAdapter extends  RecyclerView.Adapter<BoilersAdapter.Boilers
                 itemView.setBackgroundColor(Color.parseColor("#2C2F37"));
             }
         }
-        void bind(String tPod, String pPod, String tUlica, String tPlan, String tAlarm,String boilerLabel, int imageResId){
-            tv_boilerTpod.setText(tPod+" °C");
-            tv_boilerPpod.setText(pPod+" МПа");
-            tv_boilerTulica.setText(tUlica+" °C");
-            tv_boilerTplan.setText("Контроллер: "+tPlan+" °C");
-            if (!tAlarm.equals("Нет связи!")){
-            double tAlarmDouble = Double.parseDouble(tAlarm); // Преобразование строки в число
-            tAlarmDouble = Math.round(tAlarmDouble * 10.0) / 10.0; // Округление до одного десятичного знака
-            tAlarm = String.format("%.1f", tAlarmDouble);} // Преобразование числа обратно в строку с одним десятичным знаком
-            tv_boilerTalarm.setText("Ср. т. аварии:" + tAlarm + "°C");
+        void bind(DisplayMetrics metrics,String tPod, String pPod, String tUlica, String tPlan,
+                  String tAlarm,String boilerLabel, int imageResId){
+            // Установка текста
+            tv_boilerTpod.setText(tPod + " °C");
+            tv_boilerPpod.setText(pPod + " МПа");
+            tv_boilerTulica.setText(tUlica + " °C");
+            tv_boilerTplan.setText("Контроллер: " + tPlan + " °C");
+
+            if (!tAlarm.equals("Нет связи!")) {
+                double tAlarmDouble = Double.parseDouble(tAlarm);
+                tAlarmDouble = Math.round(tAlarmDouble * 10.0) / 10.0;
+                tAlarm = String.format("%.1f", tAlarmDouble);
+            }
+            tv_boilerTalarm.setText("Ср. т. аварии: " + tAlarm + "°C");
             tv_boilerLabel.setText(boilerLabel);
-            float newSize = 11; 
+
+            // Масштабирование размера шрифта
+            float baseSize = 11;
+            float baseDpi = (2400f / metrics.xdpi + 1080f / metrics.ydpi) / 2;
+            float currentDpi = (metrics.widthPixels / metrics.xdpi + metrics.heightPixels / metrics.ydpi) / 2;
+            float scaleFactor = currentDpi / baseDpi;
+            float newSize = baseSize * scaleFactor;
             tv_boilerTpod.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
             tv_boilerPpod.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
             tv_boilerTulica.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
             tv_boilerTplan.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
             tv_boilerTalarm.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
             tv_boilerLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, newSize);
+
             Glide.with(iv_boilerIcon.getContext())
                     .load(imageResId)
                     .apply(new RequestOptions()

@@ -48,8 +48,8 @@ public class MainForegroundService extends Service {
         handler.post(updateTask); // Запуск задачи обновления данных
     }
     private void createNotificationChannel() {
-        CharSequence name = getString(R.string.channel_name); // Название канала, видимое пользователю
-        String description = getString(R.string.channel_description); // Описание канала
+        CharSequence name = getString(R.string.channel_name);
+        String description = getString(R.string.channel_description);
         int importance = NotificationManager.IMPORTANCE_HIGH; // Важность канала
 
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
